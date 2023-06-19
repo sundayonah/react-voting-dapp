@@ -20,7 +20,7 @@ function App() {
 
 
   useEffect( () => {
-    // getCandidates();
+    getCandidates();
     getRemainingTime();
     getCurrentStatus();
     if (window.ethereum) {
@@ -72,7 +72,6 @@ async function getCurrentStatus() {
     contractAddress, contractAbi, signer
   );
   const status = await contractInstance.getVotingStatus();
-  console.log(status);
   setVotingStatus(status);
 }
 
@@ -85,6 +84,17 @@ async function getRemainingTime(){
   );
   const time = await contractInstance.getRemainingTime();
   setremainingTime(parseInt(time, 16));
+}
+
+async function getCandidates(){
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  const contractInstance = new ethers.Contract(
+    contractAddress, contractAbi, signer
+  );
+  const allCandidates = await contractInstance.getAllVotesOfCandidates();
+setCandidates(allCandidates)
 }
 
 
