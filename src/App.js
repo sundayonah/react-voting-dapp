@@ -21,8 +21,8 @@ function App() {
 
   useEffect( () => {
     // getCandidates();
-    // getRemainingTime();
-    // getCurrentStatus();
+    getRemainingTime();
+    getCurrentStatus();
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', handleAccountsChanged);
     }
@@ -36,7 +36,7 @@ function App() {
 
 function handleAccountsChanged(accounts){
   if(accounts.length > 0 && account !== accounts[0]){
-  setAccount(account[0])
+  setAccount(accounts[0])
 }else{
   setIsConnected(false)
   setAccount(null)
@@ -63,6 +63,30 @@ async function connectWallet () {
     console.log("Metamask is not detected in the browser")
   }
 }
+
+async function getCurrentStatus() {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  const contractInstance = new ethers.Contract (
+    contractAddress, contractAbi, signer
+  );
+  const status = await contractInstance.getVotingStatus();
+  console.log(status);
+  setVotingStatus(status);
+}
+
+async function getRemainingTime(){
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  const contractInstance = new ethers.Contract(
+    contractAddress, contractAbi, signer
+  );
+  const time = await contractInstance.getRemainingTime();
+  setremainingTime(parseInt(time, 16));
+}
+
 
   return (
     <div className="App">
