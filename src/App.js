@@ -20,7 +20,7 @@ function App() {
   useEffect( () => {
     getCandidates();
     getRemainingTime();
-    // getCurrentStatus();
+    getCurrentStatus();
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', handleAccountsChanged);
     }
@@ -86,7 +86,6 @@ function App() {
         contractAddress, contractAbi, signer
       );
       const status = await contractInstance.getVotingStatus();
-      console.log(status);
       setVotingStatus(status);
   }
 
