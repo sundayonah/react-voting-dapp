@@ -3,7 +3,8 @@ import './App.css';
 import { Signer, ethers } from 'ethers';
 import {contractAbi, contractAddress} from "./constant/constant"
 import Login from './components/Login';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Main from './components/main';
 
 function App() {
 
@@ -17,6 +18,32 @@ function App() {
   const [CanVote, setCanVote] = useState(true);
 
 
+
+  useEffect( () => {
+    // getCandidates();
+    // getRemainingTime();
+    // getCurrentStatus();
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+    }
+
+    return() => {
+      if (window.ethereum) {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+      }
+    }
+  });
+
+function handleAccountsChanged(accounts){
+  if(accounts.length > 0 && account !== accounts[0]){
+  setAccount(account[0])
+}else{
+  setIsConnected(false)
+  setAccount(null)
+}}
+
+
+
 async function connectWallet () {
   if(window.ethereum){
     try {
@@ -25,19 +52,24 @@ async function connectWallet () {
       await provider.send("eth_requestAccounts", [])
       const signer = provider.getSigner();
       const address = await signer.getAddress();
+        setAccount(address)
       console.log(`Metamask Connected :${address}`)
+      setIsConnected(true)
     
     } catch (error) {
       console.error(error)
-      
     }
+  }else{
+    console.log("Metamask is not detected in the browser")
   }
 }
 
   return (
     <div className="App">
      <h1>hello</h1>
-     <Login />
+     {/* <Login connectWallet={connectWallet} /> */}
+
+     {isConnected ? (<Main account = {account}/>) : (<Login connectWallet = {connectWallet} />)}
     </div>
   );
 }
