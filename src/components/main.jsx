@@ -9,7 +9,7 @@ const Main = (props) => {
                 <p className="connected-account">You have already voted</p>
             ) : (
                 <div>
-                    <input type="number" placeholder="Entern Candidate Id" value={props.number} onChange={props.handleNumberChange}></input>
+                  <input type="number" placeholder="Entern Candidate Id" value={props.number} onChange={props.handleNumberChange}></input>
             <br />
             <button className="login-button" onClick={props.voteFunction}>Vote</button>
                 </div>
